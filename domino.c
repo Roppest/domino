@@ -19,10 +19,10 @@ Dany Galan
 #define JUGADORES 4 //num de jugadores
 
 struct ficha sopa[TAM];//conjunto de fichas
-struct ficha jugador1[MANO];
+/*struct ficha jugador1[MANO];
 struct ficha jugador2[MANO];
 struct ficha jugador3[MANO];
-struct ficha jugador4[MANO];//Cuatro jugadores
+struct ficha jugador4[MANO];//Cuatro jugadores*/
 
 struct jugador
 {
@@ -31,11 +31,14 @@ struct jugador
 
 int jugadorConMula, ganador, turno;
 struct jugador jugadores[JUGADORES];//regula los turnos de los jugadores
+
+int tablero[2]={6,6};//solo guarda los numeros que se pueden jugar
+
 /*turnos[0] = jugador1;
 turnos[1] = jugador2;
 turnos[2] = jugador3;
 turnos[3] = jugador4;*/
-void jugar()
+void domino()
 {
   printf("Comienza el juego\n");
   /*struct ficha sopa[TAM];//conjunto de fichas
@@ -58,7 +61,8 @@ void jugar()
 
   printf("El jugador que tiene la mula es: Jugador %d\n", jugadorConMula);
 
-
+  ganador = jugar();
+  printf("\nEl ganador es: Jugador %d\n",ganador);
 }
 
 void iniFichas()
@@ -243,7 +247,8 @@ void printJugadores()
     {
       if(jugadores[0].mano[i].num1 != -1)//se cambia a -1 cuando ya se jugo
       {
-        printf("|%2d|%2d| ", jugadores[0].mano[i].num1, jugadores[0].mano[i].num2);
+        if(jugadores[0].mano[i].num2 != -1)
+          printf("|%2d|%2d| ", jugadores[0].mano[i].num1, jugadores[0].mano[i].num2);
       }
     }
   }
@@ -253,7 +258,8 @@ void printJugadores()
     {
       if(jugadores[1].mano[i].num1 != -1)
       {
-        printf("|%2d|%2d| ", jugadores[1].mano[i].num1, jugadores[1].mano[i].num2);
+        if(jugadores[1].mano[i].num2 != -1)
+          printf("|%2d|%2d| ", jugadores[1].mano[i].num1, jugadores[1].mano[i].num2);
       }
     }
   }
@@ -263,7 +269,8 @@ void printJugadores()
     {
       if(jugadores[2].mano[i].num1 != -1)
       {
-        printf("|%2d|%2d| ", jugadores[2].mano[i].num1, jugadores[2].mano[i].num2);
+        if(jugadores[2].mano[i].num2 != -1)
+          printf("|%2d|%2d| ", jugadores[2].mano[i].num1, jugadores[2].mano[i].num2);
       }
     }
   }
@@ -273,14 +280,70 @@ void printJugadores()
     {
       if(jugadores[3].mano[i].num1 != -1)
       {
-        printf("|%2d|%2d| ", jugadores[3].mano[i].num1, jugadores[3].mano[i].num2);
+        if(jugadores[3].mano[i].num2 != -1)
+          printf("|%2d|%2d| ", jugadores[3].mano[i].num1, jugadores[3].mano[i].num2);
       }
     }
   }
   printf("\n");
 }
 
-void pasarTurno()
+void printTablero()
 {
-
+  printf("Tablero:\n| %d | %d |\n",tablero[0],tablero[1]);
 }
+
+int jugar()
+{
+  int score[JUGADORES] = {7,7,7,7};//fichas por jugador
+  int i=jugadorConMula;//iter
+  int k = 0;
+  //tablero={6,6};
+
+  score[jugadorConMula] = score[jugadorConMula]-1;//se descuenta la mula al primer jugador
+  i++;
+  sacarMula(jugadores[jugadorConMula]);
+  while(score[0] > 0 || score[1] > 0 || score[2] >0 || score[3] > 0)
+  {
+    if(i > JUGADORES)
+      i=0;
+
+    for(int j = 0; j < MANO; j++)
+    {
+      if(jugadores[i].mano[j].num1 == tablero[0])//si puede jugar su ficha
+      {
+        tablero[0] = jugadores[i].mano[j].num2;//la ficha del tablero cambia
+        jugadores[i].mano[j].num1 = -1;
+        score[i] = score[i] -1;
+      }
+      else if(jugadores[i].mano[j].num2 == tablero[0])
+      {
+        tablero[0] = jugadores[i].mano[j].num1;//la ficha del tablero cambia
+        jugadores[i].mano[j].num2 = -1;
+        score[i] = score[i] -1;
+      }
+      else if(jugadores[i].mano[j].num1 == tablero[1])//prueba sagundo numero de la ficha
+      {
+        tablero[1] = jugadores[i].mano[j].num2;
+        jugadores[i].mano[j].num1 = -1;
+        score[i] = score[i] -1;
+      }
+      else if(jugadores[i].mano[j].num2 == tablero[1])
+      {
+        tablero[1] = jugadores[i].mano[j].num1;
+        jugadores[i].mano[j].num2 = -1;
+        score[i] = score[i] -1;
+      }
+    }
+    i++;
+    printf("Jugada %d\n",k);
+    printJugadores();
+    k++;
+    if(score[i] == 0)
+    {
+      return i;
+    }
+  }
+}
+
+sacarMula
