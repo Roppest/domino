@@ -5,10 +5,13 @@ struct ficha
 };
 
 
-void jugar();
+void domino();
 void iniFichas();
 void printFichas();
+void printTablero();
 void revolverFichas();
 void repartirFichas();
 void printJugadores();
 void pasarTurno();
+int jugar();//retorna el ganador
+void sacarMula(struct jugador);
